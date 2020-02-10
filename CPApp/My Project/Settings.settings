@@ -1,0 +1,28 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="My" GeneratedClassName="MySettings" UseMySettingsClassName="true">
+  <Profiles />
+  <Settings>
+    <Setting Name="oExCon" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ODBC;DSN=PostgreSQLhon03nt;</Value>
+    </Setting>
+    <Setting Name="ConnDev" Type="System.String" Scope="User">
+      <Value Profile="(Default)">host=localhost;port=5433;database=LogisticDb20190909;CommandTimeout=10000;TimeOut=1024;Userid=admin;Password=admin;</Value>
+    </Setting>
+    <Setting Name="ConnLive" Type="System.String" Scope="User">
+      <Value Profile="(Default)">host=hon14nt;port=5432;database=LogisticDb;CommandTimeout=10000;TimeOut=1024;Userid=admin;Password=admin;</Value>
+    </Setting>
+    <Setting Name="Conn1" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;host=localhost;port=5433;database=LogisticDb20190909;CommandTimeout=10000;TimeOut=1024;Userid=admin;Password=admin;&lt;/ConnectionString&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">host=localhost;port=5433;database=LogisticDb20190909;CommandTimeout=10000;TimeOut=1024;Userid=admin;Password=admin;</Value>
+    </Setting>
+    <Setting Name="smtpclient" Type="System.String" Scope="User">
+      <Value Profile="(Default)">smtp.seb.com</Value>
+    </Setting>
+    <Setting Name="MyImagePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+  </Settings>
+</SettingsFile>
