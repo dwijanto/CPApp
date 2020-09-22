@@ -162,4 +162,9 @@
     Public Sub RemoveAt(value As Integer) Implements IToolbarAction.RemoveAt
         BS.RemoveAt(value)
     End Sub
+
+    Function GetSQLSTRReport(criteria As String) As String
+        Return Model.GetSQLSTRReport(criteria)
+    End Function
+
 End Class

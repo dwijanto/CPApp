@@ -42,6 +42,14 @@ Public Class BufferStockModel
         Return sb.ToString
     End Function
 
+    Public Function GetSQLSTRReport(ByVal criteria) As String
+        Dim sb As New StringBuilder
+        sb.Append(String.Format("select u.*,c.customername,v.vendorname,u.bufferqty * u.unitprice as total from {0} u" &
+                                " left join cp.customer c on c.customercode = u.customercode " &
+                                " left join cp.vendor v on v.vendorcode = u.vendorcode {1} ;", TableName, criteria))
+        Return sb.ToString
+    End Function
+
     'Public Function LoadData1(ByRef DS As DataSet) As Boolean Implements IModel.LoadData
     '    Return False
     'End Function

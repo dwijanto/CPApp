@@ -94,9 +94,9 @@ Public Class ParamAdapter
     Public Function LoadData()
         Dim sb As New StringBuilder
         Dim myret As Boolean = False
-        sb.Append(String.Format("select pd.* from cp.paramdt pd left join cp.paramhd ph on ph.paramhdid = pd.paramhdid where ph.paramname = :approvalparam order by paramdtid;"))
-        sb.Append(String.Format("select pd.* from cp.paramdt pd left join cp.paramhd ph on ph.paramhdid = pd.paramhdid where ph.paramname = :exrate order by cvalue;"))
-        sb.Append(String.Format("select pd.* from cp.paramdt pd left join cp.paramhd ph on ph.paramhdid = pd.paramhdid where ph.paramname = :supplychainemail order by paramname desc;"))
+        sb.Append(String.Format("select pd.* from cp.paramdt pd left join cp.paramhd ph on ph.paramhdid = pd.paramhdid where ph.paramname = :componentcategory order by cvalue;"))
+        sb.Append(String.Format("select pd.* from cp.paramdt pd left join cp.paramhd ph on ph.paramhdid = pd.paramhdid where ph.paramname = :mainreason order by cvalue;"))
+        sb.Append(String.Format("select pd.* from cp.paramdt pd left join cp.paramhd ph on ph.paramhdid = pd.paramhdid where ph.paramname = :division order by cvalue desc;"))
         Dim sqlstr = sb.ToString
         DS = New DataSet
         BS = New BindingSource
@@ -104,9 +104,9 @@ Public Class ParamAdapter
         BS3 = New BindingSource
 
         Dim myparam(2) As System.Data.IDbDataParameter
-        myparam(0) = factory.CreateParameter("approvalparam", "Approval")
-        myparam(1) = factory.CreateParameter("exrate", "ExRate")
-        myparam(2) = factory.CreateParameter("supplychainemail", "SupplyChainEmail")
+        myparam(0) = factory.CreateParameter("componentcategory", "Component Category")
+        myparam(1) = factory.CreateParameter("mainreason", "Main Reason")
+        myparam(2) = factory.CreateParameter("division", "Division")
         Try
             DS = DataAccess.GetDataSet(sqlstr, CommandType.Text, myparam)
 
@@ -145,6 +145,7 @@ Public Class ParamAdapter
         Dim myret As Boolean = False
         BS.EndEdit()
         BS2.EndEdit()
+        BS3.EndEdit()
 
         Dim ds2 As DataSet = DS.GetChanges
         If Not IsNothing(ds2) Then
@@ -178,7 +179,7 @@ Public Class ParamAdapter
 
             sqlstr = "cp.sp_deleteparameter"
             dataadapter.DeleteCommand = factory.CreateCommand(sqlstr, conn)
-            dataadapter.DeleteCommand.Parameters.Add(factory.CreateParameter("", NpgsqlTypes.NpgsqlDbType.Bigint, 0, "paramdtid"))
+            dataadapter.DeleteCommand.Parameters.Add(factory.CreateParameter("", DbType.Int64, 0, "paramdtid"))
             dataadapter.DeleteCommand.CommandType = CommandType.StoredProcedure
 
             sqlstr = "cp.sp_insertparameter"

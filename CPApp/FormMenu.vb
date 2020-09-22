@@ -86,6 +86,11 @@ Public Class FormMenu
         AddHandler RBACToolStripMenuItem.Click, AddressOf ToolStripMenuItem_Click
         AddHandler UserToolStripMenuItem.Click, AddressOf ToolStripMenuItem_Click
         AddHandler ImportBufferStockToolStripMenuItem.Click, AddressOf ToolStripMenuItem_Click
+        AddHandler BufferStockToolStripMenuItem.Click, AddressOf ToolStripMenuItem_Click
+        AddHandler ImportForecastToolStripMenuItem.Click, AddressOf ToolStripMenuItem_Click
+        AddHandler ImportExposureToolStripMenuItem.Click, AddressOf ToolStripMenuItem_Click
+        AddHandler ExposureToolStripMenuItem.Click, AddressOf ToolStripMenuItem_Click
+        AddHandler ParameterToolStripMenuItem.Click, AddressOf ToolStripMenuItem_Click
         MasterToolStripMenuItem.Visible = User.can("View Master")
         AdminToolStripMenuItem.Visible = User.can("View Admin")
     End Sub
@@ -102,11 +107,31 @@ Public Class FormMenu
 
 
 
-
-   
-   
-
     Private Sub ImportBufferStockToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ImportBufferStockToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub ImportForecastToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ImportForecastToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub ImportExposureToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ImportExposureToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub BufferStockToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BufferStockToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub ExposureToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExposureToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub VendorToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles VendorToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub ParameterToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ParameterToolStripMenuItem.Click
 
     End Sub
 End Class

@@ -277,6 +277,7 @@ Public Class ExportToExcelFile
                 intI += 1
                 For i = 0 To oWb.Connections.Count - 1
                     Try
+                        Thread.Sleep(3000)
                         oWb.Connections(1).Delete()
                         success = True
                     Catch ex As Exception
