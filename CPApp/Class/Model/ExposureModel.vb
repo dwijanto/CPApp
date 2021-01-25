@@ -3,6 +3,8 @@ Public Class ExposureModel
     Implements IModel
 
 
+    Public Property stPeriod As Date
+    Public Property ndPeriod As Date
 
     Public ReadOnly Property FilterField
         Get
@@ -42,6 +44,7 @@ Public Class ExposureModel
         sb.Append(String.Format("select pd.* from cp.paramdt pd left join cp.paramhd ph on ph.paramhdid = pd.paramhdid where ph.paramname = 'Division' ;"))
         sb.Append(String.Format("select pd.* from cp.paramdt pd left join cp.paramhd ph on ph.paramhdid = pd.paramhdid where ph.paramname = 'Main Reason' ;"))
         sb.Append(String.Format("select pd.* from cp.paramdt pd left join cp.paramhd ph on ph.paramhdid = pd.paramhdid where ph.paramname = 'Component Category' ;"))
+        sb.Append(String.Format("select vendorcode,vendorname from vendor;")) 'SAP Vendor
         Return sb.ToString
     End Function
 
@@ -53,6 +56,25 @@ Public Class ExposureModel
         Dim ds As New DataSet
         Dim ExpensesTypeBS As New BindingSource
         Dim sqlstr = GetSqlstr(criteria)
+        ds = DataAccess.GetDataSet(sqlstr, CommandType.Text, Nothing)
+        ds.Tables(0).TableName = TableName
+        ExpensesTypeBS.DataSource = ds.Tables(0)
+        Return ExpensesTypeBS
+    End Function
+
+    Public Function GetPeriod() As BindingSource
+        Dim ds As New DataSet
+        Dim ExpensesTypeBS As New BindingSource
+        Dim sqlstr = "select distinct txdate,to_char(txdate,'DD-Mon-yyyy') as txdatestring  from cp.fgbomtx order by txdate desc"
+        ds = DataAccess.GetDataSet(sqlstr, CommandType.Text, Nothing)
+        ds.Tables(0).TableName = TableName
+        ExpensesTypeBS.DataSource = ds.Tables(0)
+        Return ExpensesTypeBS
+    End Function
+    Public Function GetPeriodAll() As BindingSource
+        Dim ds As New DataSet
+        Dim ExpensesTypeBS As New BindingSource
+        Dim sqlstr = "select '2000-01-01'::date as txdate,'All' as txdatestring union all (select distinct txdate,to_char(txdate,'DD-Mon-yyyy') as txdatestring  from cp.fgbomtx order by txdate desc)"
         ds = DataAccess.GetDataSet(sqlstr, CommandType.Text, Nothing)
         ds.Tables(0).TableName = TableName
         ExpensesTypeBS.DataSource = ds.Tables(0)
@@ -88,7 +110,17 @@ Public Class ExposureModel
             dataadapter.InsertCommand.Parameters.Add(factory.CreateParameter("", DbType.Int64, 0, "vendorcode", DataRowVersion.Current))
             dataadapter.InsertCommand.Parameters.Add(factory.CreateParameter("", DbType.String, 0, "shortnamecp", DataRowVersion.Current))
             dataadapter.InsertCommand.CommandType = CommandType.StoredProcedure
+
+            sqlstr = "cp.sp_updatevendor"
+            dataadapter.UpdateCommand = factory.CreateCommand(sqlstr, conn)
+            dataadapter.UpdateCommand.Parameters.Add(factory.CreateParameter("", DbType.Int64, 0, "vendorcode", DataRowVersion.Original))
+            dataadapter.UpdateCommand.Parameters.Add(factory.CreateParameter("", DbType.Int64, 0, "vendorcode", DataRowVersion.Current))
+            dataadapter.UpdateCommand.Parameters.Add(factory.CreateParameter("", DbType.String, 0, "shortnamecp", DataRowVersion.Current))
+            dataadapter.UpdateCommand.CommandType = CommandType.StoredProcedure
+
             dataadapter.InsertCommand.Transaction = mytransaction
+            dataadapter.UpdateCommand.Transaction = mytransaction
+
             mye.ra = factory.Update(mye.dataset.Tables("Vendor"))
 
             sqlstr = "cp.sp_insertcmmf"
@@ -216,8 +248,8 @@ Public Class ExposureModel
 
     Function GetSQLSTRReport(Criteria As String) As String
         Dim sqlstr As String
-        sqlstr = "( with dbd as (select * from cp.fgdbdemand union all select * from cp.cpdbdemand)" &
-                 " select pf.*,v.vendorname,cpv.shortnamecp,b.*,cc.cvalue as componentcategory,mr.cvalue as mainreason,dv.cvalue as divisionname,btx.*,bu.*,butx.*,dbd.yearweek,dbd.qty,w.monthly,(btx.unitprice * coalesce(dbd.qty,0) * coalesce(butx.quantity,0))*-1 as exposure from cp.fgprojectfamily pf" &
+        sqlstr = String.Format("( with dbd as (select * from cp.fgdbdemand union all select * from cp.cpdbdemand)" &
+                 " select pf.*,v.vendorname,cpv.shortnamecp,b.*,cc.tvalue as groupcomponentcategory,cc.cvalue as componentcategory,mr.cvalue as mainreason,dv.tvalue as groupdivision,dv.cvalue as divisionname,btx.*,bu.*,butx.*,dbd.yearweek,dbd.qty,w.monthly,(btx.unitprice * coalesce(dbd.qty,0) * coalesce(butx.quantity,0))*-1 as exposure from cp.fgprojectfamily pf" &
                  " left join vendor v on v.vendorcode = pf.vendorcode" &
                  " left join cp.vendor cpv on cpv.vendorcode = pf.vendorcode" &
                  " left join cp.fgbom b on b.fgprojectfamilyid = pf.id" &
@@ -228,17 +260,20 @@ Public Class ExposureModel
                  " left join cp.fgbomusage bu on bu.fgbomid = b.id" &
                  " left join cp.fgbomusagetx butx on butx.fgbomusageid = bu.id" &
                  " left join dbd on dbd.vendorcode = pf.vendorcode and dbd.cmmf = bu.cmmf" &
-                 " left join weektomonth w on w.yearweek = dbd.yearweek where not b.partnumber isnull)" &
+                 " left join weektomonth w on w.yearweek = dbd.yearweek where (not b.partnumber isnull) and (not btx.txdate isnull) {0})" &
                  " union all" &
-                 " (select pf.*,v.vendorname,cpv.shortnamecp,b.*,cc.cvalue as componentcategory,mr.cvalue as mainreason,dv.cvalue as divisionname,btx.*,null,null,null,null,null,null,null,null,null,'2000-01-01',(btx.unitprice * btx.stock) as exposure from cp.fgprojectfamily pf" &
+                 " (with q2 as (select pf.*,v.vendorname,cpv.shortnamecp,b.*,cc.tvalue as groupcomponentcategory,cc.cvalue as componentcategory,mr.cvalue as mainreason,dv.tvalue as groupdivision,dv.cvalue as divisionname,btx.*,null::bigint,null::bigint,null::bigint,null::bigint,null::bigint,null::date,null::numeric,null::integer,null::integer,'2000-01-01'::date,(btx.unitprice * btx.stock) as exposure from cp.fgprojectfamily pf" &
                  " left join vendor v on v.vendorcode = pf.vendorcode" &
                  " left join cp.vendor cpv on cpv.vendorcode = pf.vendorcode" &
                  " left join cp.fgbom b on b.fgprojectfamilyid = pf.id" &
                  " left join cp.paramdt cc on cc.paramdtid = b.componentcategoryid" &
                  " left join cp.paramdt mr on mr.paramdtid = b.mainreasonid" &
                  " left join cp.paramdt dv on dv.paramdtid = b.division" &
-                 " left join cp.fgbomtx btx on btx.fgbomid = b.id where not b.partnumber isnull)"
+                 " left join cp.fgbomtx btx on btx.fgbomid = b.id where (not b.partnumber isnull) {0}) select * from q2 where not exposure isnull)", Criteria)
         Return sqlstr
+        'null::bigint,null::bigint,null::bigint,null::bigint,null::bigint,null::date,null::numeric,null::integer,null::integer,'2000-01-01'::date,
+        'null,null,null,null,null,null,null,null,null,'2000-01-01',
     End Function
+
 
 End Class

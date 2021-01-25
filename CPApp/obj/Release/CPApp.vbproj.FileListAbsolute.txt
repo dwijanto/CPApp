@@ -23,3 +23,6 @@ C:\Users\dlie\Documents\GitHub\CPApp\CPApp\CPApp\obj\Release\CPApp.FormGenerateR
 C:\Users\dlie\Documents\GitHub\CPApp\CPApp\CPApp\obj\Release\CPApp.FormImportDbDemand.resources
 C:\Users\dlie\Documents\GitHub\CPApp\CPApp\CPApp\obj\Release\CPApp.FormImportExposure.resources
 C:\Users\dlie\Documents\GitHub\CPApp\CPApp\CPApp\obj\Release\CPApp.FormParameters.resources
+C:\Users\dlie\Documents\GitHub\CPApp\CPApp\CPApp\obj\Release\CPApp.FormVendor.resources
+C:\Users\dlie\Documents\GitHub\CPApp\CPApp\CPApp\obj\Release\CPApp.FormGenerateReportExposureComparison.resources
+C:\Users\dlie\Documents\GitHub\CPApp\CPApp\CPApp\obj\Release\CPApp.FormGenerateReportExposureRawData.resources

@@ -91,6 +91,8 @@ Public Class FormMenu
         AddHandler ImportExposureToolStripMenuItem.Click, AddressOf ToolStripMenuItem_Click
         AddHandler ExposureToolStripMenuItem.Click, AddressOf ToolStripMenuItem_Click
         AddHandler ParameterToolStripMenuItem.Click, AddressOf ToolStripMenuItem_Click
+        AddHandler ExposureComparisonToolStripMenuItem.Click, AddressOf ToolStripMenuItem_Click
+        AddHandler ExposureRawDataToolStripMenuItem.Click, AddressOf ToolStripMenuItem_Click
         MasterToolStripMenuItem.Visible = User.can("View Master")
         AdminToolStripMenuItem.Visible = User.can("View Admin")
     End Sub
@@ -132,6 +134,14 @@ Public Class FormMenu
     End Sub
 
     Private Sub ParameterToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ParameterToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub ExposureComparisonToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExposureComparisonToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub ExposureRawDataToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExposureRawDataToolStripMenuItem.Click
 
     End Sub
 End Class

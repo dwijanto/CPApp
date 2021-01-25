@@ -397,6 +397,9 @@ Public Class ImportExposure
                     Return False
                 End If
 
+                'Check VendorCode
+
+
                 Parent.ProgressReport(1, "Build Record..")
                 'FGCMMF
                 'FGProjectFamily
@@ -407,19 +410,45 @@ Public Class ImportExposure
 
                 Dim WSDate = (mylist(2)(0).Split(" "))(3)
 
-                'Find Vendor
+                If WSDate <> Parent.period Then
+                    errMsgSB.Append("Sorry wrong file date.")
+                    Return False
+                End If
+
                 Dim Vendorcode As String = mylist(1)(6)
                 Dim shortnamecp As String = mylist(1)(3)
                 Dim colt As String = mylist(1)(9)
+                Dim VendorNameSAP As String = String.Empty
+                'Find Vendor SAP
+                Dim pk0(0) As Object
+                pk0(0) = Vendorcode
+                Dim myresult = DS.Tables("VendorSAP").Rows.Find(pk0)
+                If IsNothing(myresult) Then
+                    'Show error message and quit.
+                    errMsgSB.Append(String.Format("This Vendor Code '{0}' is not registered in our system. Please verify the Vendor Code in this file.", Vendorcode))
+                    Return False
+                End If
+                VendorNameSAP = myresult.Item("vendorname").ToString.TrimEnd
 
+                'Find VendorCP
                 Dim pk(0) As Object
                 pk(0) = Vendorcode
-                Dim myresult = DS.Tables("Vendor").Rows.Find(pk)
-                If IsNothing(myresult) Then
+                myresult = DS.Tables("Vendor").Rows.Find(pk)
+                If IsNothing(myresult) Then                    
                     Dim dr = DS.Tables("Vendor").NewRow
                     dr.Item("vendorcode") = Vendorcode
                     dr.Item("shortnamecp") = shortnamecp
+                    dr.Item("vendorname") = VendorNameSAP
                     DS.Tables("Vendor").Rows.Add(dr)
+                Else
+                    If IsDBNull(myresult.Item("shortnamecp")) Then
+                        myresult.Item("shortnamecp") = shortnamecp
+                    Else
+                        If myresult.Item("shortnamecp") <> shortnamecp Then
+                            myresult.Item("shortnamecp") = shortnamecp
+                        End If
+                    End If
+                    
                 End If
 
                 'Find FG Project Family
@@ -654,7 +683,7 @@ Public Class ImportExposure
         DS.Tables(7).TableName = "Division"
         DS.Tables(8).TableName = "MainReason"
         DS.Tables(9).TableName = "ComponentCategory"
-
+        DS.Tables(10).TableName = "VendorSAP"
 
         'FGProjectFamily
         Dim pk(1) As DataColumn
@@ -725,6 +754,12 @@ Public Class ImportExposure
         Dim pk9(0) As DataColumn
         pk9(0) = DS.Tables(9).Columns("cvalue")
         DS.Tables(9).PrimaryKey = pk9
+
+        'VendorSAP
+        Dim pk10(0) As DataColumn
+        pk10(0) = DS.Tables(10).Columns("vendorcode")  'Vendor
+        DS.Tables(10).PrimaryKey = pk10
+
 
         'Create Relation HD-DT
         Dim rel As DataRelation

@@ -93,8 +93,10 @@
     <Compile Include="Class\Controller\DBDemandController.vb" />
     <Compile Include="Class\Controller\ExpensesTypeController.vb" />
     <Compile Include="Class\Controller\ProductRequestController.vb" />
+    <Compile Include="Class\Controller\ReportExposureController.vb" />
     <Compile Include="Class\Controller\UserController.vb" />
     <Compile Include="Class\Controller\VendorController.vb" />
+    <Compile Include="Class\DoBackground.vb" />
     <Compile Include="Class\Email.vb" />
     <Compile Include="Class\ExportToExcelFile.vb" />
     <Compile Include="Class\GenerateReport.vb" />
@@ -162,6 +164,18 @@
     <Compile Include="Form\FormGenerateReportExposure.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Form\FormGenerateReportExposureComparison.Designer.vb">
+      <DependentUpon>FormGenerateReportExposureComparison.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form\FormGenerateReportExposureComparison.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\FormGenerateReportExposureRawData.Designer.vb">
+      <DependentUpon>FormGenerateReportExposureRawData.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form\FormGenerateReportExposureRawData.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Form\FormImportBufferStock.Designer.vb">
       <DependentUpon>FormImportBufferStock.vb</DependentUpon>
     </Compile>
@@ -196,6 +210,12 @@
       <DependentUpon>FormUser.vb</DependentUpon>
     </Compile>
     <Compile Include="Form\FormUser.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\FormVendor.Designer.vb">
+      <DependentUpon>FormVendor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form\FormVendor.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form\SplashScreen1.Designer.vb">
@@ -236,6 +256,12 @@
     <EmbeddedResource Include="Form\FormGenerateReportExposure.resx">
       <DependentUpon>FormGenerateReportExposure.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Form\FormGenerateReportExposureComparison.resx">
+      <DependentUpon>FormGenerateReportExposureComparison.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\FormGenerateReportExposureRawData.resx">
+      <DependentUpon>FormGenerateReportExposureRawData.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form\FormImportBufferStock.resx">
       <DependentUpon>FormImportBufferStock.vb</DependentUpon>
     </EmbeddedResource>
@@ -253,6 +279,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form\FormUser.resx">
       <DependentUpon>FormUser.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\FormVendor.resx">
+      <DependentUpon>FormVendor.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form\SplashScreen1.resx">
       <DependentUpon>SplashScreen1.vb</DependentUpon>

@@ -28,12 +28,14 @@ Partial Class FormImportExposure
         Me.ToolStripStatusLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel2 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripProgressBar1 = New System.Windows.Forms.ToolStripProgressBar()
+        Me.DateTimePicker1 = New System.Windows.Forms.DateTimePicker()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(184, 42)
+        Me.Button1.Location = New System.Drawing.Point(192, 72)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(136, 49)
         Me.Button1.TabIndex = 5
@@ -70,11 +72,31 @@ Partial Class FormImportExposure
         Me.ToolStripProgressBar1.Name = "ToolStripProgressBar1"
         Me.ToolStripProgressBar1.Size = New System.Drawing.Size(100, 16)
         '
+        'DateTimePicker1
+        '
+        Me.DateTimePicker1.CustomFormat = "dd-MMM-yyyy"
+        Me.DateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Custom
+        Me.DateTimePicker1.Location = New System.Drawing.Point(192, 25)
+        Me.DateTimePicker1.Name = "DateTimePicker1"
+        Me.DateTimePicker1.Size = New System.Drawing.Size(136, 20)
+        Me.DateTimePicker1.TabIndex = 6
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(149, 31)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(37, 13)
+        Me.Label1.TabIndex = 7
+        Me.Label1.Text = "Period"
+        '
         'FormImportExposure
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(549, 184)
+        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.DateTimePicker1)
         Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Name = "FormImportExposure"
@@ -91,4 +113,6 @@ Partial Class FormImportExposure
     Public WithEvents ToolStripStatusLabel1 As System.Windows.Forms.ToolStripStatusLabel
     Public WithEvents ToolStripStatusLabel2 As System.Windows.Forms.ToolStripStatusLabel
     Public WithEvents ToolStripProgressBar1 As System.Windows.Forms.ToolStripProgressBar
+    Friend WithEvents DateTimePicker1 As System.Windows.Forms.DateTimePicker
+    Friend WithEvents Label1 As System.Windows.Forms.Label
 End Class

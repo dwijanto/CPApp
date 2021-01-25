@@ -1,12 +1,17 @@
 ﻿Imports Microsoft.Office.Interop
-Public Class FormGenerateReportExposure
+Imports System.Threading
 
+Public Class FormGenerateReportExposure
+    Dim myThread As New System.Threading.Thread(AddressOf DoQuery)
     Public Shared myForm As FormGenerateReportExposure
     Private SaveFileName As String = String.Empty
     Private SaveFileDialog1 As New SaveFileDialog
-    Dim myModel As New ExposureModel
+    Dim myController As New ReportExposureController
+    'Dim myModel As New ExposureModel
     'Private myIdentity As UserController = User.getIdentity
     Private ViewAllData As Boolean = False
+    Dim PeriodBS As BindingSource
+
     Public Sub New(ByVal ViewAllData As Boolean)
         InitializeComponent()
         Me.ViewAllData = ViewAllData
@@ -15,7 +20,7 @@ Public Class FormGenerateReportExposure
 
         ' This call is required by the designer.
         InitializeComponent()
-
+       
         ' Add any initialization after the InitializeComponent() call.
 
     End Sub
@@ -30,16 +35,24 @@ Public Class FormGenerateReportExposure
     End Function
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        ToolStripStatusLabel1.Text = ""
-        ToolStripStatusLabel2.Text = ""
-        SaveFileDialog1.FileName = String.Format("Exposure-{0:yyyyMMdd}.xlsx", Date.Today)
-        Dim Criteria As String = String.Empty
-
-        If SaveFileDialog1.ShowDialog = Windows.Forms.DialogResult.OK Then
-            'Dim myReport As ExportToExcelFile = New ExportToExcelFile(Me, myModel.GetSQLSTRReport(Criteria), IO.Path.GetDirectoryName(SaveFileDialog1.FileName), IO.Path.GetFileName(SaveFileDialog1.FileName), AddressOf FormatReport, AddressOf PivotCallback, 2, "\templates\ExcelTemplate.xltx")
-            Dim myReport As ExportToExcelFile = New ExportToExcelFile(Me, myModel.GetSQLSTRReport(Criteria), IO.Path.GetDirectoryName(SaveFileDialog1.FileName), IO.Path.GetFileName(SaveFileDialog1.FileName), AddressOf FormatReport, AddressOf PivotCallback, 6, "\templates\ExposureTemplate.xltx")
-            myReport.Run(Me, New EventArgs)
+        If ComboBox1.SelectedIndex >= 0 Then
+            ToolStripStatusLabel1.Text = ""
+            ToolStripStatusLabel2.Text = ""
+            SaveFileDialog1.FileName = String.Format("Exposure-{0:yyyyMMdd}.xlsx", Date.Today)
+            Dim drv As DataRowView = ComboBox1.SelectedItem
+            Dim criteria As String = String.Empty
+            If ComboBox1.SelectedIndex > 0 Then
+                criteria = String.Format("and btx.txdate = '{0:yyyy-MM-dd}'", drv.Item("txdate"))
+            End If
+            If SaveFileDialog1.ShowDialog = Windows.Forms.DialogResult.OK Then
+                'Dim myReport As ExportToExcelFile = New ExportToExcelFile(Me, myModel.GetSQLSTRReport(Criteria), IO.Path.GetDirectoryName(SaveFileDialog1.FileName), IO.Path.GetFileName(SaveFileDialog1.FileName), AddressOf FormatReport, AddressOf PivotCallback, 2, "\templates\ExcelTemplate.xltx")
+                Dim myReport As ExportToExcelFile = New ExportToExcelFile(Me, myController.myModel.GetSQLSTRReport(criteria), IO.Path.GetDirectoryName(SaveFileDialog1.FileName), IO.Path.GetFileName(SaveFileDialog1.FileName), AddressOf FormatReport, AddressOf PivotCallback, 6, "\templates\ExposureTemplate.xltx")
+                myReport.Run(Me, New EventArgs)
+            End If
+        Else
+            MessageBox.Show("Please select from period.")
         End If
+        
     End Sub
 
     Private Sub FormatReport()
@@ -71,13 +84,14 @@ Public Class FormGenerateReportExposure
         'MessageBox.Show("change pivot cache")
         osheet.PivotTables("PivotTable1").ChangePivotCache(owb.PivotCaches.Create(Excel.XlPivotTableSourceType.xlDatabase, SourceData:="db"))
         'oXl.Run("ShowFG")
-        Threading.Thread.Sleep(100)
+        'Threading.Thread.Sleep(100)
         'MessageBox.Show("refresh1")
-        osheet.PivotTables("PivotTable1").PivotCache.Refresh()
-        Threading.Thread.Sleep(100)
+        '---osheet.PivotTables("PivotTable1").PivotCache.Refresh()
+        'Threading.Thread.Sleep(100)
         osheet.PivotTables("PivotTable1").PivotFields("monthly").AutoSort(Excel.XlSortOrder.xlAscending, "monthly")
         'MessageBox.Show("refresh2")
         osheet.pivottables("PivotTable1").SaveData = True
+        osheet.pivottables("PivotTable1").PivotCache.MissingItemsLimit = Excel.XlPivotTableMissingItems.xlMissingItemsNone
         'Threading.Thread.Sleep(100)
         'MessageBox.Show("refreshAll")
 
@@ -87,15 +101,16 @@ Public Class FormGenerateReportExposure
         'MessageBox.Show("change pivot cache")
         osheet.PivotTables("PivotTable1").ChangePivotCache(owb.PivotCaches.Create(Excel.XlPivotTableSourceType.xlDatabase, SourceData:="db"))
         'oXl.Run("ShowFG")
-        Threading.Thread.Sleep(100)
+        'Threading.Thread.Sleep(100)
 
         'MessageBox.Show("refresh1")
-        osheet.PivotTables("PivotTable1").PivotCache.Refresh()
-        Threading.Thread.Sleep(100)
+        '---osheet.PivotTables("PivotTable1").PivotCache.Refresh()
+        'Threading.Thread.Sleep(100)
         osheet.PivotTables("PivotTable1").PivotFields("monthly").AutoSort(Excel.XlSortOrder.xlAscending, "monthly")
-        Threading.Thread.Sleep(100)
+        'Threading.Thread.Sleep(100)
         'MessageBox.Show("refresh2")
         osheet.pivottables("PivotTable1").SaveData = True
+        osheet.pivottables("PivotTable1").PivotCache.MissingItemsLimit = Excel.XlPivotTableMissingItems.xlMissingItemsNone
         'Threading.Thread.Sleep(100)
         'MessageBox.Show("refreshAll")
 
@@ -104,14 +119,15 @@ Public Class FormGenerateReportExposure
         'MessageBox.Show("change pivot cache")
         osheet.PivotTables("PivotTable1").ChangePivotCache(owb.PivotCaches.Create(Excel.XlPivotTableSourceType.xlDatabase, SourceData:="db"))
         'oXl.Run("ShowFG")
-        Threading.Thread.Sleep(100)
+        'Threading.Thread.Sleep(100)
         'MessageBox.Show("refresh1")
-        osheet.PivotTables("PivotTable1").PivotCache.Refresh()
-        Threading.Thread.Sleep(100)
+        '---osheet.PivotTables("PivotTable1").PivotCache.Refresh()
+        'Threading.Thread.Sleep(100)
         osheet.PivotTables("PivotTable1").PivotFields("monthly").AutoSort(Excel.XlSortOrder.xlAscending, "monthly")
-        Threading.Thread.Sleep(100)
+        'Threading.Thread.Sleep(100)
         'MessageBox.Show("refresh2")
         osheet.pivottables("PivotTable1").SaveData = True
+        osheet.pivottables("PivotTable1").PivotCache.MissingItemsLimit = Excel.XlPivotTableMissingItems.xlMissingItemsNone
         'Threading.Thread.Sleep(100)
         'MessageBox.Show("refreshAll")
 
@@ -120,12 +136,13 @@ Public Class FormGenerateReportExposure
         'MessageBox.Show("change pivot cache")
         osheet.PivotTables("PivotTable1").ChangePivotCache(owb.PivotCaches.Create(Excel.XlPivotTableSourceType.xlDatabase, SourceData:="db"))
         'oXl.Run("ShowFG")
-        Threading.Thread.Sleep(100)
+        'Threading.Thread.Sleep(100)
         'MessageBox.Show("refresh1")
-        osheet.PivotTables("PivotTable1").PivotCache.Refresh()
-        Threading.Thread.Sleep(100)
+        '---osheet.PivotTables("PivotTable1").PivotCache.Refresh()
+        'Threading.Thread.Sleep(100)
         'MessageBox.Show("refresh2")
         osheet.pivottables("PivotTable1").SaveData = True
+        osheet.pivottables("PivotTable1").PivotCache.MissingItemsLimit = Excel.XlPivotTableMissingItems.xlMissingItemsNone
         'Threading.Thread.Sleep(100)
         'MessageBox.Show("refreshAll")
 
@@ -134,20 +151,64 @@ Public Class FormGenerateReportExposure
         'MessageBox.Show("change pivot cache")
         osheet.PivotTables("PivotTable1").ChangePivotCache(owb.PivotCaches.Create(Excel.XlPivotTableSourceType.xlDatabase, SourceData:="db"))
         'oXl.Run("ShowFG")
-        Threading.Thread.Sleep(100)
+        'Threading.Thread.Sleep(100)
         'MessageBox.Show("refresh1")
-        osheet.PivotTables("PivotTable1").PivotCache.Refresh()
-        Threading.Thread.Sleep(100)
+        '---osheet.PivotTables("PivotTable1").PivotCache.Refresh()
+        'Threading.Thread.Sleep(100)
         'MessageBox.Show("refresh2")
         osheet.pivottables("PivotTable1").SaveData = True
+        osheet.pivottables("PivotTable1").PivotCache.MissingItemsLimit = Excel.XlPivotTableMissingItems.xlMissingItemsNone
         'Threading.Thread.Sleep(100)
         'MessageBox.Show("refreshAll")
 
         'owb.RefreshAll()
         'osheet.Cells.EntireColumn.AutoFit()
-        Threading.Thread.Sleep(5000)
+        'Threading.Thread.Sleep(5000)
         owb.Worksheets(1).select()
-        Threading.Thread.Sleep(1000)
+        'Threading.Thread.Sleep(1000)
         osheet = owb.Worksheets(1)
+    End Sub
+
+    Private Sub InitData()
+        If Not myThread.IsAlive Then
+            ToolStripStatusLabel1.Text = ""
+            myThread = New Thread(AddressOf DoQuery)
+            myThread.Start()
+        Else
+            MessageBox.Show("Please wait until the current process is finished.")
+        End If
+    End Sub
+
+    Sub DoQuery()
+        Try
+            ProgressReport(1, "Preparing Data...Please wait.")
+            PeriodBS = New BindingSource
+            PeriodBS = myController.myModel.GetPeriodAll
+            ProgressReport(4, "Init Data")
+            ProgressReport(1, String.Format("Loading...Done."))
+        Catch ex As Exception
+            ProgressReport(1, ex.Message)
+        End Try
+    End Sub
+
+    Public Sub ProgressReport(ByVal id As Integer, ByVal message As String)
+        If Me.InvokeRequired Then
+            Dim d As New ProgressReportDelegate(AddressOf ProgressReport)
+            Me.Invoke(d, New Object() {id, message})
+        Else
+            Select Case id
+                Case 1
+                    ToolStripStatusLabel1.Text = message
+                Case 4
+                    ComboBox1.DisplayMember = "txdatestring"
+                    ComboBox1.ValueMember = "txdate"
+                    ComboBox1.DataSource = PeriodBS
+                    ComboBox1.SelectedIndex = 0
+            End Select
+        End If
+    End Sub
+
+    Private Sub FormGenerateReportExposure_Load(sender As Object, e As EventArgs) Handles Me.Load
+        InitData()
     End Sub
 End Class

@@ -34,11 +34,13 @@ Partial Class FormMenu
         Me.ReportToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BufferStockToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExposureToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ExposureComparisonToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MasterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.UserToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.CustomerToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.VendorToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ParameterToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ExposureRawDataToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripContainer1.BottomToolStripPanel.SuspendLayout()
         Me.ToolStripContainer1.TopToolStripPanel.SuspendLayout()
         Me.ToolStripContainer1.SuspendLayout()
@@ -129,7 +131,7 @@ Partial Class FormMenu
         '
         'ReportToolStripMenuItem
         '
-        Me.ReportToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BufferStockToolStripMenuItem, Me.ExposureToolStripMenuItem})
+        Me.ReportToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.BufferStockToolStripMenuItem, Me.ExposureToolStripMenuItem, Me.ExposureComparisonToolStripMenuItem, Me.ExposureRawDataToolStripMenuItem})
         Me.ReportToolStripMenuItem.Name = "ReportToolStripMenuItem"
         Me.ReportToolStripMenuItem.Size = New System.Drawing.Size(54, 20)
         Me.ReportToolStripMenuItem.Text = "Report"
@@ -137,16 +139,23 @@ Partial Class FormMenu
         'BufferStockToolStripMenuItem
         '
         Me.BufferStockToolStripMenuItem.Name = "BufferStockToolStripMenuItem"
-        Me.BufferStockToolStripMenuItem.Size = New System.Drawing.Size(138, 22)
+        Me.BufferStockToolStripMenuItem.Size = New System.Drawing.Size(190, 22)
         Me.BufferStockToolStripMenuItem.Tag = "FormGenerateReportBufferStock"
         Me.BufferStockToolStripMenuItem.Text = "Buffer Stock"
         '
         'ExposureToolStripMenuItem
         '
         Me.ExposureToolStripMenuItem.Name = "ExposureToolStripMenuItem"
-        Me.ExposureToolStripMenuItem.Size = New System.Drawing.Size(138, 22)
+        Me.ExposureToolStripMenuItem.Size = New System.Drawing.Size(190, 22)
         Me.ExposureToolStripMenuItem.Tag = "FormGenerateReportExposure"
         Me.ExposureToolStripMenuItem.Text = "Exposure"
+        '
+        'ExposureComparisonToolStripMenuItem
+        '
+        Me.ExposureComparisonToolStripMenuItem.Name = "ExposureComparisonToolStripMenuItem"
+        Me.ExposureComparisonToolStripMenuItem.Size = New System.Drawing.Size(190, 22)
+        Me.ExposureComparisonToolStripMenuItem.Tag = "FormGenerateReportExposureComparison"
+        Me.ExposureComparisonToolStripMenuItem.Text = "Exposure Comparison"
         '
         'MasterToolStripMenuItem
         '
@@ -158,28 +167,35 @@ Partial Class FormMenu
         'UserToolStripMenuItem
         '
         Me.UserToolStripMenuItem.Name = "UserToolStripMenuItem"
-        Me.UserToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.UserToolStripMenuItem.Size = New System.Drawing.Size(128, 22)
         Me.UserToolStripMenuItem.Tag = "FormUser"
         Me.UserToolStripMenuItem.Text = "User"
         '
         'CustomerToolStripMenuItem
         '
         Me.CustomerToolStripMenuItem.Name = "CustomerToolStripMenuItem"
-        Me.CustomerToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.CustomerToolStripMenuItem.Size = New System.Drawing.Size(128, 22)
         Me.CustomerToolStripMenuItem.Text = "Customer"
         '
         'VendorToolStripMenuItem
         '
         Me.VendorToolStripMenuItem.Name = "VendorToolStripMenuItem"
-        Me.VendorToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.VendorToolStripMenuItem.Size = New System.Drawing.Size(128, 22)
         Me.VendorToolStripMenuItem.Text = "Vendor"
         '
         'ParameterToolStripMenuItem
         '
         Me.ParameterToolStripMenuItem.Name = "ParameterToolStripMenuItem"
-        Me.ParameterToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.ParameterToolStripMenuItem.Size = New System.Drawing.Size(128, 22)
         Me.ParameterToolStripMenuItem.Tag = "FormParameters"
         Me.ParameterToolStripMenuItem.Text = "Parameter"
+        '
+        'ExposureRawDataToolStripMenuItem
+        '
+        Me.ExposureRawDataToolStripMenuItem.Name = "ExposureRawDataToolStripMenuItem"
+        Me.ExposureRawDataToolStripMenuItem.Size = New System.Drawing.Size(190, 22)
+        Me.ExposureRawDataToolStripMenuItem.Tag = "FormGenerateReportExposureRawData"
+        Me.ExposureRawDataToolStripMenuItem.Text = "Exposure RawData"
         '
         'FormMenu
         '
@@ -217,5 +233,7 @@ Partial Class FormMenu
     Friend WithEvents ImportExposureToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ExposureToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
     Friend WithEvents ParameterToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ExposureComparisonToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
+    Friend WithEvents ExposureRawDataToolStripMenuItem As System.Windows.Forms.ToolStripMenuItem
 
 End Class

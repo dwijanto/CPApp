@@ -26,7 +26,9 @@ Public Class ExportToExcelFile
     Dim Dataset1 As New DataSet
     Public Property Datasheet As Integer = 1
     Public Property mytemplate As String = "\templates\ExcelTemplate.xltx"
-    Public Property QueryList As List(Of QueryWorksheet)
+    Public Property mytemplate2 As String = "\templates\ExcelTemplate.xltx"
+    Public Property QueryList As List(Of QueryWorkSheet)
+    Public Property ExternalFilename As String
 
     Public Sub New(ByRef Parent As Object, ByRef Directory As String, ByRef ReportName As String, ByVal FormatReportCallBack As FormatReportDelegate, Optional ByVal datasheet As Integer = 1, Optional ByVal template As String = "\templates\ExcelTemplate.xltx")
         Me.Directory = Directory
@@ -95,6 +97,7 @@ Public Class ExportToExcelFile
             Try
                 myThread = New System.Threading.Thread(New ThreadStart(AddressOf DoWork))
                 myThread.SetApartmentState(ApartmentState.MTA)
+                'myThread.SetApartmentState(ApartmentState.STA) 'Use STA to avoid application is busy
                 myThread.Start()
             Catch ex As Exception
                 MsgBox(ex.Message)
@@ -107,6 +110,19 @@ Public Class ExportToExcelFile
         If Not myThread.IsAlive Then
             Try
                 myThread = New System.Threading.Thread(New ThreadStart(AddressOf DoWorkForm))
+                myThread.SetApartmentState(ApartmentState.MTA)
+                myThread.Start()
+            Catch ex As Exception
+                MsgBox(ex.Message)
+            End Try
+        Else
+            MsgBox("Please wait until the current process is finished")
+        End If
+    End Sub
+    Public Sub CreateExternalData(ByRef sender As System.Object, ByVal e As System.EventArgs)
+        If Not myThread.IsAlive Then
+            Try
+                myThread = New System.Threading.Thread(New ThreadStart(AddressOf DoWorkExternalData))
                 myThread.SetApartmentState(ApartmentState.MTA)
                 myThread.Start()
             Catch ex As Exception
@@ -138,6 +154,50 @@ Public Class ExportToExcelFile
             End If
             ProgressReport(3, "")
             'ProgressReport(4, errSB.ToString)
+        Else
+            errSB.Append(errMsg) '& vbCrLf)
+            ProgressReport(3, errSB.ToString)
+        End If
+        sw.Stop()
+
+
+    End Sub
+
+    Sub DoWorkExternalData()
+        Dim errMsg As String = String.Empty
+        Dim i As Integer = 0
+        Dim errSB As New StringBuilder
+        Dim sw As New Stopwatch
+        sw.Start()
+        ProgressReport(2, "Export To Excel..")
+        ProgressReport(6, "Marques..")
+        status = GenerateReport(Directory, errMsg, Dataset1)
+        ProgressReport(5, "Continues..")
+        If status Then
+            Dim myFile = ExternalFilename.Split(",")
+
+            Dim mystatus As Boolean = True
+            For i = 0 To myFile.Count - 1
+                Dim filename As String = String.Format("{0}\{1}", IO.Path.GetDirectoryName(Directory), myFile(i))
+                If Not GenerateExternalData(filename, errMsg) Then
+                    mystatus = False
+                End If
+            Next
+            If mystatus Then
+                sw.Stop()
+                ProgressReport(2, String.Format("Elapsed Time: {0}:{1}.{2} Done.", Format(sw.Elapsed.Minutes, "00"), Format(sw.Elapsed.Seconds, "00"), sw.Elapsed.Milliseconds.ToString))
+                ProgressReport(3, "")
+
+                If MsgBox("File name: " & Directory & vbCr & vbCr & "Open the file?", vbYesNo, "Export To Excel") = DialogResult.Yes Then
+                    Process.Start(Directory)
+                End If
+                ProgressReport(3, "")
+                'ProgressReport(4, errSB.ToString)
+            Else
+                errSB.Append(errMsg) '& vbCrLf)
+                ProgressReport(3, errSB.ToString)
+            End If
+            
         Else
             errSB.Append(errMsg) '& vbCrLf)
             ProgressReport(3, errSB.ToString)
@@ -541,5 +601,94 @@ Public Class ExportToExcelFile
         Finally
             o = Nothing
         End Try
+    End Sub
+
+    Private Function GenerateExternalData(ByRef FileName As String, ByRef errorMsg As String) As Boolean
+        Dim myCriteria As String = String.Empty
+        Dim result As Boolean = False
+
+        Dim StopWatch As New Stopwatch
+        StopWatch.Start()
+        'Open Excel
+        Application.DoEvents()
+
+        'Excel Variable
+        Dim oXl As Excel.Application = Nothing
+        Dim oWb As Excel.Workbook = Nothing
+        Dim oSheet As Excel.Worksheet = Nothing
+        Dim SheetName As String = vbEmpty
+        Dim hwnd As System.IntPtr
+        Try
+            'Create Object Excel 
+            ProgressReport(2, "CreateObject..")
+            oXl = CType(CreateObject("Excel.Application"), Excel.Application)
+            hwnd = oXl.Hwnd
+            'oXl.ScreenUpdating = False
+            'oXl.Visible = False
+            oXl.DisplayAlerts = False
+            ProgressReport(2, "Opening Template...")
+            ProgressReport(2, "Generating records..")
+            If mytemplate2.Contains("172") Then
+                oWb = oXl.Workbooks.Open(mytemplate2)
+            Else
+                oWb = oXl.Workbooks.Open(Application.StartupPath & mytemplate2)
+            End If
+
+            oXl.Visible = False
+
+            ProgressReport(2, "Creating Worksheet...")
+            oWb.Worksheets(1).select()
+
+
+            FormatReportCallback.Invoke(oWb, New ExternalDataArgs(FileName, Me.Directory))
+
+            StopWatch.Stop()
+
+            'FileName = FileName & "\" & String.Format(ReportName)
+            ProgressReport(3, "")
+            ProgressReport(2, "Saving File ..." & FileName)
+            If FileName.Contains("xlsm") Then
+                oWb.SaveAs(FileName, FileFormat:=Excel.XlFileFormat.xlOpenXMLWorkbookMacroEnabled)
+            Else
+                oWb.SaveAs(FileName)
+            End If
+
+            ProgressReport(2, "Elapsed Time: " & Format(StopWatch.Elapsed.Minutes, "00") & ":" & Format(StopWatch.Elapsed.Seconds, "00") & "." & StopWatch.Elapsed.Milliseconds.ToString)
+            result = True
+        Catch ex As Exception
+            ProgressReport(3, ex.Message & FileName)
+            errorMsg = ex.Message
+        Finally
+            'clear excel from memory
+            Try
+                oXl.Quit()
+                releaseComObject(oSheet)
+                releaseComObject(oWb)
+                releaseComObject(oXl)
+                GC.Collect()
+                GC.WaitForPendingFinalizers()
+            Catch ex As Exception
+
+            End Try
+
+            Try
+                'to make sure excel is no longer in memory
+                EndTask(hwnd, True, True)
+            Catch ex As Exception
+            End Try
+
+        End Try
+        Return result
+    End Function
+
+End Class
+Public Class ExternalDataArgs
+    Inherits EventArgs
+    Public Property FileName As String
+    Public Property DBFile As String
+
+    Public Sub New(ByVal filename As String, ByVal DBFile As String)
+        Me.FileName = filename
+        Me.DBFile = DBFile
     End Sub
 End Class

@@ -8,7 +8,7 @@ Public Class FormImportExposure
     Public Property Filename As String
     Public DS As DataSet
     ' Dim BStockController As BufferStockController = New BufferStockController
-
+    Public Period As Date
 
     Public Shared Function getInstance()
         If myform Is Nothing Then
@@ -30,6 +30,7 @@ Public Class FormImportExposure
 
     Private Sub DoImport()
         If Not myThread.IsAlive Then
+            period = DateTimePicker1.Value.Date
             ToolStripStatusLabel1.Text = ""
             myThread = New Thread(AddressOf DoImportFile)
             myThread.Start()

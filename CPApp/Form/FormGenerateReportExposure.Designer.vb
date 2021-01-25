@@ -27,6 +27,8 @@ Partial Class FormGenerateReportExposure
         Me.ToolStripStatusLabel2 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripProgressBar1 = New System.Windows.Forms.ToolStripProgressBar()
         Me.ToolStripContainer1 = New System.Windows.Forms.ToolStripContainer()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.ComboBox1 = New System.Windows.Forms.ComboBox()
         Me.Button1 = New System.Windows.Forms.Button()
         Me.StatusStrip1.SuspendLayout()
         Me.ToolStripContainer1.BottomToolStripPanel.SuspendLayout()
@@ -52,7 +54,7 @@ Partial Class FormGenerateReportExposure
         'ToolStripStatusLabel2
         '
         Me.ToolStripStatusLabel2.Name = "ToolStripStatusLabel2"
-        Me.ToolStripStatusLabel2.Size = New System.Drawing.Size(561, 17)
+        Me.ToolStripStatusLabel2.Size = New System.Drawing.Size(530, 17)
         Me.ToolStripStatusLabel2.Spring = True
         Me.ToolStripStatusLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
@@ -70,6 +72,8 @@ Partial Class FormGenerateReportExposure
         '
         'ToolStripContainer1.ContentPanel
         '
+        Me.ToolStripContainer1.ContentPanel.Controls.Add(Me.Label1)
+        Me.ToolStripContainer1.ContentPanel.Controls.Add(Me.ComboBox1)
         Me.ToolStripContainer1.ContentPanel.Controls.Add(Me.Button1)
         Me.ToolStripContainer1.ContentPanel.Size = New System.Drawing.Size(678, 151)
         Me.ToolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill
@@ -79,9 +83,26 @@ Partial Class FormGenerateReportExposure
         Me.ToolStripContainer1.TabIndex = 7
         Me.ToolStripContainer1.Text = "ToolStripContainer1"
         '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(207, 38)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(37, 13)
+        Me.Label1.TabIndex = 3
+        Me.Label1.Text = "Period"
+        '
+        'ComboBox1
+        '
+        Me.ComboBox1.FormattingEnabled = True
+        Me.ComboBox1.Location = New System.Drawing.Point(250, 35)
+        Me.ComboBox1.Name = "ComboBox1"
+        Me.ComboBox1.Size = New System.Drawing.Size(202, 21)
+        Me.ComboBox1.TabIndex = 1
+        '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(244, 56)
+        Me.Button1.Location = New System.Drawing.Point(250, 62)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(202, 38)
         Me.Button1.TabIndex = 0
@@ -101,6 +122,7 @@ Partial Class FormGenerateReportExposure
         Me.ToolStripContainer1.BottomToolStripPanel.ResumeLayout(False)
         Me.ToolStripContainer1.BottomToolStripPanel.PerformLayout()
         Me.ToolStripContainer1.ContentPanel.ResumeLayout(False)
+        Me.ToolStripContainer1.ContentPanel.PerformLayout()
         Me.ToolStripContainer1.ResumeLayout(False)
         Me.ToolStripContainer1.PerformLayout()
         Me.ResumeLayout(False)
@@ -112,4 +134,6 @@ Partial Class FormGenerateReportExposure
     Public WithEvents ToolStripProgressBar1 As System.Windows.Forms.ToolStripProgressBar
     Friend WithEvents ToolStripContainer1 As System.Windows.Forms.ToolStripContainer
     Friend WithEvents Button1 As System.Windows.Forms.Button
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+    Friend WithEvents ComboBox1 As System.Windows.Forms.ComboBox
 End Class
